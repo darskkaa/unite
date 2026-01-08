@@ -186,6 +186,53 @@ if page == "Dashboard":
         else:
             st.info("No data available.")
 
+    # 3. ALL CASES TABLE
+    st.markdown("---")
+    st.markdown("### 📋 All Active Cases")
+    
+    df_all_cases = run_query("""
+        SELECT 
+            s.request_id as "ID",
+            r.region_name as "Region",
+            s.request_type as "Type",
+            s.status as "Status",
+            s.priority as "Priority",
+            s.request_date::date as "Date",
+            COALESCE(
+                (SELECT COUNT(*) FROM FollowUps WHERE request_id = s.request_id), 
+                0
+            ) as "Follow-ups"
+        FROM ServiceRequests s 
+        LEFT JOIN Regions r ON s.region_id = r.region_id
+        WHERE s.status != 'Closed'
+        ORDER BY 
+            CASE s.priority 
+                WHEN 'Critical' THEN 1 
+                WHEN 'High' THEN 2 
+                WHEN 'Medium' THEN 3 
+                WHEN 'Low' THEN 4 
+            END,
+            s.request_date DESC
+    """)
+    
+    if not df_all_cases.empty:
+        st.dataframe(
+            df_all_cases,
+            use_container_width=True,
+            column_config={
+                "ID": st.column_config.NumberColumn("Case ID", width="small"),
+                "Status": st.column_config.TextColumn("Status", width="medium"),
+                "Priority": st.column_config.TextColumn("Priority", width="small"),
+                "Date": st.column_config.DateColumn("Request Date", format="MMM DD, YYYY"),
+                "Follow-ups": st.column_config.NumberColumn("Activity", width="small"),
+            },
+            hide_index=True,
+        )
+        st.caption(f"Showing {len(df_all_cases)} active case(s)")
+    else:
+        st.info("🎉 No active cases! All cases have been closed.")
+
+
 # ==========================================
 # PAGE: CASE MANAGEMENT
 # ==========================================
