@@ -42,13 +42,27 @@ st.markdown("""
         --text-color: #102a5c;
     }
     
-    /* TARGETED TEXT CONTRAST */
-    h1, h2, h3, h4, h5, h6, .stMarkdown, .stMetricLabel {
-        color: var(--text-color) !important;
+        --text-color: #102a5c;
     }
     
-    .stMarkdown p {
+    /* 1. MAIN CONTENT (Light Background -> Dark Text) */
+    .main .stMarkdown, .main h1, .main h2, .main h3, .main h4, .main div, .main label, .main span {
+        color: var(--text-color) !important;
+    }
+    .main p {
         color: #333 !important;
+    }
+
+    /* 2. SIDEBAR (Dark Background -> Light Text) */
+    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, 
+    [data-testid="stSidebar"] label, [data-testid="stSidebar"] div, [data-testid="stSidebar"] span, [data-testid="stSidebar"] p {
+        color: #ffffff !important;
+    }
+    
+    /* 3. INPUTS (Reset to standard) */
+    .stTextInput input, .stSelectbox div, .stTextArea textarea {
+        color: #333 !important;
+        background-color: #ffffff !important;
     }
     
     /* APP BACKGROUND */
