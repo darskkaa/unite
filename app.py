@@ -39,7 +39,16 @@ st.markdown("""
         --secondary: #102a5c;
         --bg-color: #f0f2f6;
         --card-bg: rgba(255, 255, 255, 0.9);
-        --text-color: #1a1a1a;
+        --text-color: #102a5c;
+    }
+    
+    /* TARGETED TEXT CONTRAST */
+    h1, h2, h3, h4, h5, h6, .stMarkdown, .stMetricLabel {
+        color: var(--text-color) !important;
+    }
+    
+    .stMarkdown p {
+        color: #333 !important;
     }
     
     /* APP BACKGROUND */
@@ -148,6 +157,8 @@ st.markdown("""
         /* Prevent Auto-Zoom on inputs by enforcing 16px */
         input, select, textarea {
             font-size: 16px !important;
+            color: #000 !important;
+            background-color: #fff !important;
         }
         
         /* Larger Touch Targets */
