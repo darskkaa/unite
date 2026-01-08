@@ -89,7 +89,22 @@ with st.sidebar:
         </div>
     """, unsafe_allow_html=True)
     
-    page = st.radio("Navigation", ["Dashboard", "Case Management", "Staff Portal", "Data Reports"], label_visibility="collapsed")
+    # Initialize session state for navigation
+    if 'page' not in st.session_state:
+        st.session_state.page = "Dashboard"
+    
+    # Navigation with session state
+    page = st.radio(
+        "Navigation", 
+        ["Dashboard", "Case Management", "Staff Portal", "Data Reports"], 
+        label_visibility="collapsed",
+        index=["Dashboard", "Case Management", "Staff Portal", "Data Reports"].index(st.session_state.page)
+    )
+    
+    # Update session state if user changes page manually
+    if page != st.session_state.page:
+        st.session_state.page = page
+        st.session_state.pop('selected_case_id', None)  # Clear selected case when navigating away
     
     st.markdown("---")
     st.markdown("### 📅 Global Filters")
@@ -189,6 +204,7 @@ if page == "Dashboard":
     # 3. ALL CASES TABLE
     st.markdown("---")
     st.markdown("### 📋 All Active Cases")
+    st.caption("Click on a Case ID to view full details")
     
     df_all_cases = run_query("""
         SELECT 
@@ -216,18 +232,37 @@ if page == "Dashboard":
     """)
     
     if not df_all_cases.empty:
-        st.dataframe(
-            df_all_cases,
-            use_container_width=True,
-            column_config={
-                "ID": st.column_config.NumberColumn("Case ID", width="small"),
-                "Status": st.column_config.TextColumn("Status", width="medium"),
-                "Priority": st.column_config.TextColumn("Priority", width="small"),
-                "Date": st.column_config.DateColumn("Request Date", format="MMM DD, YYYY"),
-                "Follow-ups": st.column_config.NumberColumn("Activity", width="small"),
-            },
-            hide_index=True,
-        )
+        # Create interactive table with clickable IDs
+        for idx, row in df_all_cases.iterrows():
+            col1, col2, col3, col4, col5, col6, col7 = st.columns([1, 2, 2, 2, 1.5, 2, 1])
+            
+            # Clickable Case ID button
+            with col1:
+                if st.button(f"#{row['ID']}", key=f"case_{row['ID']}", use_container_width=True):
+                    st.session_state.selected_case_id = row['ID']
+                    st.session_state.page = "Case Management"
+                    st.rerun()
+            
+            # Display other columns with color coding
+            with col2:
+                st.write(row['Region'])
+            with col3:
+                st.write(row['Type'])
+            with col4:
+                # Color code status
+                status_color = {"Open": "🔵", "In Progress": "🟡", "Closed": "🟢"}.get(row['Status'], "⚪")
+                st.write(f"{status_color} {row['Status']}")
+            with col5:
+                # Color code priority
+                priority_emoji = {"Critical": "🔴", "High": "🟠", "Medium": "🟡", "Low": "🟢"}.get(row['Priority'], "⚪")
+                st.write(f"{priority_emoji} {row['Priority']}")
+            with col6:
+                st.write(row['Date'])
+            with col7:
+                st.write(f"📊 {row['Follow-ups']}")
+            
+            st.markdown("---")
+        
         st.caption(f"Showing {len(df_all_cases)} active case(s)")
     else:
         st.info("🎉 No active cases! All cases have been closed.")
@@ -274,6 +309,15 @@ elif page == "Case Management":
                             st.success("✅ Request Created Successfully!")
                             st.rerun()
 
+    # Auto-switch to Manage tab if coming from dashboard
+    if 'selected_case_id' in st.session_state and st.session_state.selected_case_id:
+        tab_new, tab_manage = st.tabs(["➕ New Request", "🛠️ Manage Active Cases"])
+        # Force the Manage tab to be active (by putting it second but making it default)
+        default_tab = 1
+    else:
+        tab_new, tab_manage = st.tabs(["➕ New Request", "🛠️ Manage Active Cases"])
+        default_tab = 0
+
     with tab_manage:
         req_map = get_active_requests()
         if not req_map:
@@ -282,7 +326,28 @@ elif page == "Case Management":
             c_sel, c_acts = st.columns([1, 2])
             with c_sel:
                 st.markdown("#### Select Case")
-                sel_label = st.selectbox("Search Active Cases", list(req_map.keys()))
+                
+                # Auto-select case if coming from dashboard
+                if 'selected_case_id' in st.session_state and st.session_state.selected_case_id:
+                    # Find the label for the selected case ID
+                    matching_label = None
+                    for label, case_id in req_map.items():
+                        if case_id == st.session_state.selected_case_id:
+                            matching_label = label
+                            break
+                    
+                    if matching_label:
+                        default_index = list(req_map.keys()).index(matching_label)
+                    else:
+                        default_index = 0
+                    
+                    sel_label = st.selectbox("Search Active Cases", list(req_map.keys()), index=default_index)
+                    # Clear the selected case after first render
+                    if 'selected_case_id' in st.session_state:
+                        del st.session_state.selected_case_id
+                else:
+                    sel_label = st.selectbox("Search Active Cases", list(req_map.keys()))
+                
                 sel_id = req_map[sel_label]
                 
                 # Fetch details
