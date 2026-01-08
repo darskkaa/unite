@@ -273,7 +273,12 @@ if page == "Dashboard":
 # ==========================================
 elif page == "Case Management":
     st.markdown("## 📁 Case Management")
-    tab_new, tab_manage = st.tabs(["➕ New Request", "🛠️ Manage Active Cases"])
+    
+    # Swap tab order if coming from dashboard - puts "Manage Cases" first (default selected)
+    if 'selected_case_id' in st.session_state and st.session_state.selected_case_id:
+        tab_manage, tab_new = st.tabs(["🛠️ Manage Active Cases", "➕ New Request"])
+    else:
+        tab_new, tab_manage = st.tabs(["➕ New Request", "🛠️ Manage Active Cases"])
 
     with tab_new:
         with st.container():
@@ -308,15 +313,6 @@ elif page == "Case Management":
                             st.balloons()
                             st.success("✅ Request Created Successfully!")
                             st.rerun()
-
-    # Auto-switch to Manage tab if coming from dashboard
-    if 'selected_case_id' in st.session_state and st.session_state.selected_case_id:
-        tab_new, tab_manage = st.tabs(["➕ New Request", "🛠️ Manage Active Cases"])
-        # Force the Manage tab to be active (by putting it second but making it default)
-        default_tab = 1
-    else:
-        tab_new, tab_manage = st.tabs(["➕ New Request", "🛠️ Manage Active Cases"])
-        default_tab = 0
 
     with tab_manage:
         req_map = get_active_requests()
