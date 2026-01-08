@@ -244,12 +244,12 @@ elif page == "Case Management":
                 # Card View
                 st.markdown(f"""
                 <div style="background:white; padding:20px; border-radius:10px; border:1px solid #ddd; margin-top:10px;">
-                    <h3 style="margin-top:0;">Case #{sel_id}</h3>
-                    <p><b>Type:</b> {curr['request_type']}</p>
-                    <p><b>Date:</b> {curr['request_date']}</p>
-                    <p><b>Priority:</b> <span style="background:{'#FFcccc' if curr['priority']=='Critical' else '#eee'}; padding:2px 8px; border-radius:4px;">{curr['priority']}</span></p>
+                    <h3 style="margin-top:0; color:#102a5c;">Case #{sel_id}</h3>
+                    <p style="color:#333;"><b>Type:</b> {curr['request_type']}</p>
+                    <p style="color:#333;"><b>Date:</b> {curr['request_date']}</p>
+                    <p style="color:#333;"><b>Priority:</b> <span style="background:{'#FFcccc' if curr['priority']=='Critical' else '#eee'}; padding:2px 8px; border-radius:4px; color:#333;">{curr['priority']}</span></p>
                     <hr>
-                    <p style="font-style:italic;">"{curr.get('description') or 'No description provided.'}"</p>
+                    <p style="font-style:italic; color:#666;">"{curr.get('description') or 'No description provided.'}"</p>
                 </div>
                 """, unsafe_allow_html=True)
 
