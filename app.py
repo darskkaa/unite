@@ -11,8 +11,22 @@ st.set_page_config(
     page_title="United Way Service Portal",
     page_icon="🤝",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': None,
+        'Report a bug': None,
+        'About': "United Way Service Portal v2.0 (Mobile Optimized)"
+    }
 )
+
+# ==========================================
+# IOS & PWA CONFIGURATION
+# ==========================================
+st.markdown("""
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover">
+""", unsafe_allow_html=True)
 
 # ==========================================
 # SOTA STYLING (Glassmorphism & Modern UI)
@@ -125,6 +139,47 @@ st.markdown("""
     .stTabs [aria-selected="true"] {
         background-color: var(--secondary);
         color: white;
+    }
+    
+    /* ==========================================
+       MOBILE / SAFARI OPTIMIZATIONS
+       ========================================== */
+    @media (max-width: 768px) {
+        /* Prevent Auto-Zoom on inputs by enforcing 16px */
+        input, select, textarea {
+            font-size: 16px !important;
+        }
+        
+        /* Larger Touch Targets */
+        .stButton>button {
+            min-height: 48px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        /* Sidebar & Layout Adjustments */
+        section[data-testid="stSidebar"] {
+            width: 100% !important;
+        }
+        
+        /* Safe Area Insets (Notch/Dynamic Island) */
+        .stApp {
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
+        
+        /* Full Width Metrics on Mobile */
+        div[data-testid="column"] {
+            width: 100% !important;
+            flex: 1 1 100% !important;
+            min-width: 100% !important;
+        }
+        
+        .metric-card {
+            margin-bottom: 15px;
+        }
     }
     </style>
 """, unsafe_allow_html=True)
