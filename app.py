@@ -29,49 +29,22 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# SOTA STYLING (Glassmorphism & Modern UI)
+# CLEAN MINIMAL STYLING
 # ==========================================
 st.markdown("""
     <style>
-    /* GLOBAL VARIABLES */
+    /* VARIABLES */
     :root {
         --primary: #FF8200;
         --secondary: #102a5c;
-        --bg-color: #f0f2f6;
-        --card-bg: rgba(255, 255, 255, 0.9);
-        --text-color: #102a5c;
     }
     
-        --text-color: #102a5c;
-    }
-    
-    /* 1. MAIN CONTENT (Light Background -> Dark Text) */
-    .main .stMarkdown, .main h1, .main h2, .main h3, .main h4, .main div, .main label, .main span {
-        color: var(--text-color) !important;
-    }
-    .main p {
-        color: #333 !important;
-    }
-
-    /* 2. SIDEBAR (Dark Background -> Light Text) */
-    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, 
-    [data-testid="stSidebar"] label, [data-testid="stSidebar"] div, [data-testid="stSidebar"] span, [data-testid="stSidebar"] p {
-        color: #ffffff !important;
-    }
-    
-    /* 3. INPUTS (Reset to standard) */
-    .stTextInput input, .stSelectbox div, .stTextArea textarea {
-        color: #333 !important;
-        background-color: #ffffff !important;
-    }
-    
-    /* APP BACKGROUND */
+    /* MINIMAL BACKGROUND */
     .stApp {
         background: linear-gradient(135deg, #f0f2f6 0%, #e2e6ea 100%);
-        color: var(--text-color);
     }
 
-    /* CUSTOM METRIC CARDS */
+    /* CUSTOM METRIC CARDS (HTML only) */
     .metric-card {
         background: white;
         border-radius: 12px;
@@ -96,12 +69,6 @@ st.markdown("""
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
-    .metric-delta {
-        font-size: 12px;
-        font-weight: 600;
-    }
-    .delta-pos { color: #28a745; }
-    .delta-neg { color: #dc3545; }
 
     /* WARNING CARDS */
     .warning-card {
@@ -111,99 +78,36 @@ st.markdown("""
         border-radius: 8px;
         color: #856404;
         margin-bottom: 15px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
-    /* HEADERS & TEXT */
-    h1, h2, h3 {
-        color: var(--secondary);
-        font-weight: 700;
-        letter-spacing: -0.5px;
-    }
-    
-    /* DATAFRAME STYLING */
-    div[data-testid="stDataFrame"] {
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-
-    /* BUTTONS */
+    /* BUTTONS - Subtle Enhancement */
     .stButton>button {
         background-color: var(--primary);
         color: white;
         border: none;
         border-radius: 8px;
-        padding: 0.5rem 1rem;
         font-weight: 600;
-        transition: background-color 0.2s;
+        transition: all 0.2s;
     }
     .stButton>button:hover {
         background-color: #e67600;
-        color: white;
         box-shadow: 0 2px 8px rgba(255, 130, 0, 0.4);
     }
 
-    /* TABS */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 20px;
-    }
-    .stTabs [data-baseweb="tab"] {
-        height: 50px;
-        white-space: pre-wrap;
-        background-color: white;
-        border-radius: 8px;
-        padding: 10px 20px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    .stTabs [aria-selected="true"] {
-        background-color: var(--secondary);
-        color: white;
-    }
-    
-    /* ==========================================
-       MOBILE / SAFARI OPTIMIZATIONS
-       ========================================== */
+    /* MOBILE OPTIMIZATIONS */
     @media (max-width: 768px) {
-        /* Prevent Auto-Zoom on inputs by enforcing 16px */
         input, select, textarea {
             font-size: 16px !important;
-            color: #000 !important;
-            background-color: #fff !important;
         }
         
-        /* Larger Touch Targets */
         .stButton>button {
             min-height: 48px;
             width: 100%;
-            margin-bottom: 10px;
         }
         
-        /* Sidebar & Layout Adjustments */
-        section[data-testid="stSidebar"] {
-            width: 100% !important;
-        }
-        
-        /* Safe Area Insets (Notch/Dynamic Island) */
         .stApp {
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
-            padding-left: env(safe-area-inset-left);
-            padding-right: env(safe-area-inset-right);
-        }
-        
-        /* Full Width Metrics on Mobile */
-        div[data-testid="column"] {
-            width: 100% !important;
-            flex: 1 1 100% !important;
-            min-width: 100% !important;
-        }
-        
-        .metric-card {
-            margin-bottom: 15px;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
     }
     </style>
